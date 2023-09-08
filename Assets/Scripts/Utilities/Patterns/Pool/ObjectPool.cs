@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CannonShootingPrototype.Infrastructure.Services.Flow;
 using CannonShootingPrototype.Utilities.Extensions.Unity;
 using UnityEngine;
 
 namespace CannonShootingPrototype.Utilities.Patterns.Pool
 {
-    public class ObjectPool : IObjectPool
+    public class ObjectPool : IObjectPool, IInitializable
     {
         private readonly GameObject _gameObjectPrefab;
         private readonly Transform _objectsParent;

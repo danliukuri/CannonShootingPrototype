@@ -10,6 +10,7 @@ namespace CannonShootingPrototype.Utilities.Extensions.Unity
             where TComponent : UnityEngine.Object
         {
             bool previousState = original.activeSelf;
+            original.SetActive(false);
             TComponent component = instantiationFunc.Invoke(original, parent);
             original.SetActive(previousState);
             return component;

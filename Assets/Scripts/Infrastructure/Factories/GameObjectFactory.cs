@@ -18,6 +18,7 @@ namespace CannonShootingPrototype.Infrastructure.Factories
         {
             GameObject freeGameObject = _objectPool.GetFreeObject();
             _gameObjectConfigurator.Configure(freeGameObject);
+            freeGameObject.SetActive(true);
             return freeGameObject;
         }
     }
