@@ -1,9 +1,11 @@
 using System;
+using CannonShootingPrototype.Infrastructure.Services;
+using CannonShootingPrototype.Infrastructure.Services.Flow;
 using CannonShootingPrototype.Utilities.Patterns.State.Services;
 
 namespace CannonShootingPrototype.Utilities.Patterns.State.Containers
 {
-    public class StatesContainerInitializer : IDisposable
+    public class StatesContainerInitializer : IInitializable, IDisposable
     {
         private readonly IStateRegistrar<IState> _stateContainer;
         private readonly IState[] _states;
