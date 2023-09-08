@@ -123,6 +123,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!4 &39266032 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2807941908951690017, guid: 584418eb1d9eb694e9379d2fb2a54ae3, type: 3}
+  m_PrefabInstance: {fileID: 2807941909000141834}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &57844728 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4887040171967565789, guid: bd0219b142e32f641a8e3e058c4469ad, type: 3}
@@ -373,6 +378,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!4 &807553142 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2807941909998334848, guid: 584418eb1d9eb694e9379d2fb2a54ae3, type: 3}
+  m_PrefabInstance: {fileID: 2807941909000141834}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &820172044 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4317588900006490862, guid: d3c6e9b05cb15f542b05900f06955461, type: 3}
@@ -424,6 +434,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Player>k__BackingField: {fileID: 1700353388}
+  <Cannon>k__BackingField: {fileID: 807553142}
+  <CannonBarrel>k__BackingField: {fileID: 39266032}
   <ServicesTicker>k__BackingField: {fileID: 1264201573}
   <ServicesDisposer>k__BackingField: {fileID: 1264201574}
 --- !u!4 &1264201572

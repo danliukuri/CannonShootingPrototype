@@ -1,7 +1,7 @@
 ﻿using System;
 using CannonShootingPrototype.Architecture.GameStates;
+using CannonShootingPrototype.Features.Cannon;
 using CannonShootingPrototype.Features.Player;
-using CannonShootingPrototype.Infrastructure.Services;
 using CannonShootingPrototype.Infrastructure.Services.Flow;
 using CannonShootingPrototype.Infrastructure.Services.Input;
 using CannonShootingPrototype.Utilities.Patterns.State;
@@ -34,10 +34,15 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
             var playerRotator = new PlayerRotator(mouseInputService, _sceneDependenciesProvider.Player,
                 _assetsDependenciesProvider.PlayerConfig.RotationSpeed);
 
+            var cannonRotator = new CannonRotator(_sceneDependenciesProvider.Cannon, mouseInputService,
+                _sceneDependenciesProvider.Player, _assetsDependenciesProvider.PlayerConfig.RotationSpeed);
+            var cannonBarrelRotator = new CannonBarrelRotator(_sceneDependenciesProvider.CannonBarrel,
+                mouseInputService, _assetsDependenciesProvider.PlayerConfig.RotationSpeed);
+
 
             var servicesInitializer = new ServicesInitializer(new IInitializable[]
             {
-                statesContainerInitializer, playerRotator
+                statesContainerInitializer, playerRotator, cannonRotator, cannonBarrelRotator
             });
             servicesInitializer.Initialize();
 
@@ -45,7 +50,10 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
             servicesTicker.TickableServices = new ITickable[] { mouseInputService };
 
             ServicesDisposer servicesDisposer = _sceneDependenciesProvider.ServicesDisposer;
-            servicesDisposer.DisposableServices = new IDisposable[] { playerRotator };
+            servicesDisposer.DisposableServices = new IDisposable[]
+            {
+                playerRotator, cannonRotator, cannonBarrelRotator
+            };
 
             return stateMachine;
         }
