@@ -1,16 +1,18 @@
-﻿namespace CannonShootingPrototype.Infrastructure.Services.Flow
+﻿using System.Collections.Generic;
+
+namespace CannonShootingPrototype.Infrastructure.Services.Flow
 {
     public class ServicesInitializer : IInitializable
     {
-        private readonly IInitializable[] _initializableServices;
+        private readonly IList<IInitializable> _initializableServices;
 
-        public ServicesInitializer(IInitializable[] initializableServices) =>
+        public ServicesInitializer(IList<IInitializable> initializableServices) =>
             _initializableServices = initializableServices;
 
         public void Initialize()
         {
-            foreach (IInitializable initializableService in _initializableServices)
-                initializableService.Initialize();
+            for (int i = 0; i < _initializableServices.Count; i++)
+                _initializableServices[i].Initialize();
         }
     }
 }

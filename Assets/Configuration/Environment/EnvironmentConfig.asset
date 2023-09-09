@@ -9,9 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7bbd41214c6c408aa654bc90c8bd3cbf, type: 3}
-  m_Name: CannonShellConfig
+  m_Script: {fileID: 11500000, guid: 43e6423b40d73b048a1640a839995078, type: 3}
+  m_Name: EnvironmentConfig
   m_EditorClassIdentifier: 
-  <PoolConfig>k__BackingField: {fileID: 11400000, guid: b1b467cecc332c641b7a45a027c288c6, type: 2}
-  <MaxMeshVertexPositionOffset>k__BackingField: 0.2
-  <Mass>k__BackingField: 10
+  <GravityForce>k__BackingField: {x: 0, y: -9.81, z: 0}

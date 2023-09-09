@@ -1,11 +1,15 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
 using CannonShootingPrototype.Architecture.GameStates;
+using CannonShootingPrototype.Data.Dynamic.Cannon;
 using CannonShootingPrototype.Data.Static.Configuration.Cannon;
 using CannonShootingPrototype.Data.Static.Configuration.Creation;
 using CannonShootingPrototype.Features.Cannon;
 using CannonShootingPrototype.Features.Cannon.Shell;
+using CannonShootingPrototype.Features.Environment;
 using CannonShootingPrototype.Features.MeshGeneration;
 using CannonShootingPrototype.Features.Player;
+using CannonShootingPrototype.Features.Transformation.Force;
 using CannonShootingPrototype.Infrastructure.Factories;
 using CannonShootingPrototype.Infrastructure.Services.Flow;
 using CannonShootingPrototype.Infrastructure.Services.Input;
@@ -13,7 +17,7 @@ using CannonShootingPrototype.Utilities.Patterns.Pool;
 using CannonShootingPrototype.Utilities.Patterns.State;
 using CannonShootingPrototype.Utilities.Patterns.State.Containers;
 using CannonShootingPrototype.Utilities.Patterns.State.Machines;
-using Object = UnityEngine.Object;
+using UnityEngine;
 
 namespace CannonShootingPrototype.Architecture.Bootstrap
 {
@@ -21,15 +25,17 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
     {
         private readonly AssetsDependenciesProvider _assetsDependenciesProvider;
         private readonly SceneDependenciesProvider _sceneDependenciesProvider;
-        private CannonBarrelRotator _cannonBarrelRotator;
-        private CannonRotator _cannonRotator;
-        private MouseInputService _mouseInputService;
-        private PlayerRotator _playerRotator;
-        private StateMachine _stateMachine;
-        private StatesContainerInitializer _statesContainerInitializer;
+
+
+        private readonly Dictionary<GameObject, CannonShellData> _cannonShells =
+            new Dictionary<GameObject, CannonShellData>();
+        private readonly IList<IForceAccumulator> _forceAccumulators =
+            new List<ForceAccumulator>().Cast<IForceAccumulator>().ToList();
+
         private FireButtonInputService _fireButtonInputService;
-        private CannonShellShooter _cannonShellShooter;
-        private ObjectPool _cannonShellPool;
+        private FlowServicesContainer _flowServicesContainer;
+        private MouseInputService _mouseInputService;
+        private StateMachine _stateMachine;
 
         public CompositionRoot(AssetsDependenciesProvider assetsDependenciesProvider,
             SceneDependenciesProvider sceneDependenciesProvider)
@@ -40,76 +46,97 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
 
         public IStateMachine Initialize()
         {
+            _flowServicesContainer = new FlowServicesContainer();
             InitializeGameStateMachine();
             InitializeInputServices();
             InitializePlayer();
             InitializeCannon();
             InitializeCannonShells();
+            InitializeEnvironmentForceGenerators();
             InitializeFlowServices();
             return _stateMachine;
-        }
-
-        private void InitializeInputServices()
-        {
-            _mouseInputService = new MouseInputService();
-            _fireButtonInputService = new FireButtonInputService();
         }
 
         private void InitializeGameStateMachine()
         {
             var states = new IState[] { new SetupGameState() };
             var stateContainer = new StateContainer();
-            _statesContainerInitializer = new StatesContainerInitializer(stateContainer, states);
+            var statesContainerInitializer = new StatesContainerInitializer(stateContainer, states);
+            _flowServicesContainer.InitializableServices.Add(statesContainerInitializer);
+            _flowServicesContainer.DisposableServices.Add(statesContainerInitializer);
+
             _stateMachine = new StateMachine(stateContainer);
         }
 
-        private void InitializePlayer() =>
-            _playerRotator = new PlayerRotator(_mouseInputService, _sceneDependenciesProvider.Player,
+        private void InitializeInputServices()
+        {
+            _mouseInputService = new MouseInputService();
+            _flowServicesContainer.TickableServices.Add(_mouseInputService);
+            _fireButtonInputService = new FireButtonInputService();
+            _flowServicesContainer.TickableServices.Add(_fireButtonInputService);
+        }
+
+        private void InitializePlayer()
+        {
+            var playerRotator = new PlayerRotator(_mouseInputService, _sceneDependenciesProvider.Player,
                 _assetsDependenciesProvider.PlayerConfig.RotationSpeed);
+            _flowServicesContainer.InitializableServices.Add(playerRotator);
+            _flowServicesContainer.DisposableServices.Add(playerRotator);
+        }
 
         private void InitializeCannon()
         {
-            _cannonRotator = new CannonRotator(_sceneDependenciesProvider.Cannon, _mouseInputService,
+            var cannonRotator = new CannonRotator(_sceneDependenciesProvider.Cannon, _mouseInputService,
                 _sceneDependenciesProvider.Player, _assetsDependenciesProvider.PlayerConfig.RotationSpeed);
-            _cannonBarrelRotator = new CannonBarrelRotator(_sceneDependenciesProvider.CannonBarrel,
+            _flowServicesContainer.InitializableServices.Add(cannonRotator);
+            _flowServicesContainer.DisposableServices.Add(cannonRotator);
+
+            var cannonBarrelRotator = new CannonBarrelRotator(_sceneDependenciesProvider.CannonBarrel,
                 _mouseInputService, _assetsDependenciesProvider.PlayerConfig.RotationSpeed);
+            _flowServicesContainer.InitializableServices.Add(cannonBarrelRotator);
+            _flowServicesContainer.DisposableServices.Add(cannonBarrelRotator);
         }
 
         private void InitializeCannonShells()
         {
             CannonShellConfig cannonShellConfig = _assetsDependenciesProvider.CannonShellConfig;
-            
+
             PoolConfig cannonShellPoolConfig = cannonShellConfig.PoolConfig;
-            _cannonShellPool = new ObjectPool(cannonShellPoolConfig.Prefab,
+            var cannonShellPool = new ObjectPool(cannonShellPoolConfig.Prefab,
                 _sceneDependenciesProvider.CannonShellsParent, cannonShellPoolConfig.InitialNumberOfObjects,
                 Object.Instantiate);
+            _flowServicesContainer.InitializableServices.Add(cannonShellPool);
 
             var meshGenerator = new DeformedCubeMeshGenerator(cannonShellConfig.MaxMeshVertexPositionOffset);
-            var cannonShellConfigurator =
-                new CannonShellConfigurator(_sceneDependenciesProvider.CannonBarrelMuzzle, meshGenerator);
+            var cannonShellConfigurator = new CannonShellConfigurator(_cannonShells, _flowServicesContainer,
+                _forceAccumulators, _sceneDependenciesProvider.CannonBarrelMuzzle,
+                _assetsDependenciesProvider.CannonShellConfig.Mass, meshGenerator);
 
-            var cannonShellFactory = new GameObjectFactory(cannonShellConfigurator, _cannonShellPool);
-            _cannonShellShooter = new CannonShellShooter(cannonShellFactory, _fireButtonInputService);
+            var cannonShellFactory = new GameObjectFactory(cannonShellConfigurator, cannonShellPool);
 
+            var cannonShellShooter = new CannonShellShooter(cannonShellFactory, _cannonShells, _fireButtonInputService,
+                _assetsDependenciesProvider.CannonConfig.Firepower, _sceneDependenciesProvider.CannonBarrelMuzzle);
+            _flowServicesContainer.InitializableServices.Add(cannonShellShooter);
+            _flowServicesContainer.DisposableServices.Add(cannonShellShooter);
+        }
+
+        private void InitializeEnvironmentForceGenerators()
+        {
+            var gravityForceGenerator = new GravityForceGenerator(_assetsDependenciesProvider.EnvironmentConfig,
+                _forceAccumulators);
+            _flowServicesContainer.TickableServices.Add(gravityForceGenerator);
         }
 
         private void InitializeFlowServices()
         {
-            var servicesInitializer = new ServicesInitializer(new IInitializable[]
-            {
-                _statesContainerInitializer, _playerRotator, _cannonRotator, _cannonBarrelRotator, _cannonShellShooter,
-                _cannonShellPool
-            });
+            var servicesInitializer = new ServicesInitializer(_flowServicesContainer.InitializableServices);
             servicesInitializer.Initialize();
 
-            ServicesTicker servicesTicker = _sceneDependenciesProvider.ServicesTicker;
-            servicesTicker.TickableServices = new ITickable[] { _mouseInputService, _fireButtonInputService };
-
             ServicesDisposer servicesDisposer = _sceneDependenciesProvider.ServicesDisposer;
-            servicesDisposer.DisposableServices = new IDisposable[]
-            {
-                _playerRotator, _cannonRotator, _cannonBarrelRotator, _cannonShellShooter
-            };
+            servicesDisposer.DisposableServices = _flowServicesContainer.DisposableServices;
+
+            ServicesTicker servicesTicker = _sceneDependenciesProvider.ServicesTicker;
+            servicesTicker.TickableServices = _flowServicesContainer.TickableServices;
         }
     }
 }

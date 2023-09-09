@@ -9,5 +9,6 @@ namespace CannonShootingPrototype.Data.Static.Configuration.Cannon
         [field: SerializeField] public PoolConfig PoolConfig { get; private set; }
 
         [field: SerializeField] public float MaxMeshVertexPositionOffset { get; private set; }
+        [field: SerializeField] public float Mass { get; private set; }
     }
 }

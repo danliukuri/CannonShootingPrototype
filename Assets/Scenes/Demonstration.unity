@@ -521,7 +521,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <PlayerConfig>k__BackingField: {fileID: 11400000, guid: da2c6b652af750e4baefa6aa55215879, type: 2}
+  <CannonConfig>k__BackingField: {fileID: 11400000, guid: 58e79e573fd47834eaa0bbe1907aad01, type: 2}
   <CannonShellConfig>k__BackingField: {fileID: 11400000, guid: 7004676e7d39a1440b963762b5434e92, type: 2}
+  <EnvironmentConfig>k__BackingField: {fileID: 11400000, guid: 633dffa194e7dbf4094d2a53d1b52124, type: 2}
 --- !u!4 &1700353388 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3172930473597052920, guid: 02fcb5c6c31775e4fbc7f52cb18b33f6, type: 3}
@@ -534,6 +536,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 56069150692874030, guid: 584418eb1d9eb694e9379d2fb2a54ae3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
     - target: {fileID: 2807941908951690017, guid: 584418eb1d9eb694e9379d2fb2a54ae3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 64.8

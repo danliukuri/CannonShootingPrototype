@@ -1,15 +1,16 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace CannonShootingPrototype.Infrastructure.Services.Flow
 {
     public class ServicesTicker : MonoBehaviour
     {
-        public ITickable[] TickableServices { get; set; }
+        public IList<ITickable> TickableServices { get; set; }
         
         private void Update()
         {
-            foreach (ITickable tickableService in TickableServices)
-                tickableService.Tick();
+            for (int i = 0; i < TickableServices.Count; i++)
+                TickableServices[i].Tick();
         }
     }
 }

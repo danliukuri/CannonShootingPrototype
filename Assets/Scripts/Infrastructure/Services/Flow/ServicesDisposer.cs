@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace CannonShootingPrototype.Infrastructure.Services.Flow
 {
     public class ServicesDisposer : MonoBehaviour, IDisposable
     {
-        public IDisposable[] DisposableServices { get; set; }
+        public IList<IDisposable> DisposableServices { get; set; }
 
         public void Dispose()
         {
-            foreach (IDisposable disposableService in DisposableServices)
-                disposableService.Dispose();
+            for (int i = 0; i < DisposableServices.Count; i++)
+                DisposableServices[i].Dispose();
         }
     }
 }
