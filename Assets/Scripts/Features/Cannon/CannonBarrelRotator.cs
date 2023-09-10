@@ -18,9 +18,9 @@ namespace CannonShootingPrototype.Features.Cannon
             _rotationSpeed = rotationSpeed;
         }
 
-        public void Initialize() => _mouseInputService.OnMouseAxisYChanged += RotateVertically;
+        public void Initialize() => _mouseInputService.AxisYChanged += RotateVertically;
 
-        public void Dispose() => _mouseInputService.OnMouseAxisYChanged -= RotateVertically;
+        public void Dispose() => _mouseInputService.AxisYChanged -= RotateVertically;
 
         private void RotateVertically(float mouseAxisY) =>
             _cannonBarrel.Rotate(Vector3.right, mouseAxisY * _rotationSpeed);

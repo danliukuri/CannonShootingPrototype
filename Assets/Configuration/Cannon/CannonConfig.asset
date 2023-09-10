@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8957fddc5b974b4281b1779f56cf587e, type: 3}
   m_Name: CannonConfig
   m_EditorClassIdentifier: 
-  <Firepower>k__BackingField: 5
+  <MinFirepower>k__BackingField: 2
+  <MaxFirepower>k__BackingField: 10
+  <InitialFirepower>k__BackingField: 5
+  <FirepowerChangingSpeed>k__BackingField: 3

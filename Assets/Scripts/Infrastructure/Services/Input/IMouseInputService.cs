@@ -4,7 +4,8 @@ namespace CannonShootingPrototype.Infrastructure.Services.Input
 {
     public interface IMouseInputService
     {
-        event Action<float> OnMouseAxisXChanged;
-        event Action<float> OnMouseAxisYChanged;
+        event Action<float> AxisXChanged;
+        event Action<float> AxisYChanged;
+        event Action<float> WheelChanged;
     }
 }

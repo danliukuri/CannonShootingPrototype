@@ -36,6 +36,7 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
         private FlowServicesContainer _flowServicesContainer;
         private MouseInputService _mouseInputService;
         private StateMachine _stateMachine;
+        private CannonData _cannonData;
 
         public CompositionRoot(AssetsDependenciesProvider assetsDependenciesProvider,
             SceneDependenciesProvider sceneDependenciesProvider)
@@ -96,6 +97,12 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
                 _mouseInputService, _assetsDependenciesProvider.PlayerConfig.RotationSpeed);
             _flowServicesContainer.InitializableServices.Add(cannonBarrelRotator);
             _flowServicesContainer.DisposableServices.Add(cannonBarrelRotator);
+            
+            _cannonData = new CannonData
+            {
+                Firepower = _assetsDependenciesProvider.CannonConfig.InitialFirepower,
+                Muzzle = _sceneDependenciesProvider.CannonBarrelMuzzle
+            };
         }
 
         private void InitializeCannonShells()
@@ -115,10 +122,15 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
 
             var cannonShellFactory = new GameObjectFactory(cannonShellConfigurator, cannonShellPool);
 
-            var cannonShellShooter = new CannonShellShooter(cannonShellFactory, _cannonShells, _fireButtonInputService,
-                _assetsDependenciesProvider.CannonConfig.Firepower, _sceneDependenciesProvider.CannonBarrelMuzzle);
+            var cannonShellShooter =
+                new CannonShellShooter(_cannonData, cannonShellFactory, _cannonShells, _fireButtonInputService);
             _flowServicesContainer.InitializableServices.Add(cannonShellShooter);
             _flowServicesContainer.DisposableServices.Add(cannonShellShooter);
+            
+            var cannonFirepowerChanger =
+                new CannonFirepowerChanger(_cannonData, _assetsDependenciesProvider.CannonConfig, _mouseInputService);
+            _flowServicesContainer.InitializableServices.Add(cannonFirepowerChanger);
+            _flowServicesContainer.DisposableServices.Add(cannonFirepowerChanger);
         }
 
         private void InitializeEnvironmentForceGenerators()
@@ -133,8 +145,8 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
             var trajectoryPredictor = new TrajectoryPredictor(_assetsDependenciesProvider.EnvironmentConfig,
                 _assetsDependenciesProvider.CannonTrajectoryLineConfig.MaxNumberOfPoints);
             
-            var trajectoryLineDrawer = new TrajectoryLineDrawer(_assetsDependenciesProvider.CannonShellConfig,
-                _assetsDependenciesProvider.CannonConfig.Firepower, _sceneDependenciesProvider.CannonBarrelMuzzle,
+            var trajectoryLineDrawer =
+                new TrajectoryLineDrawer(_cannonData, _assetsDependenciesProvider.CannonShellConfig,
                 _sceneDependenciesProvider.CannonTrajectoryLineRenderer, trajectoryPredictor);
             _flowServicesContainer.TickableServices.Add(trajectoryLineDrawer);
             _flowServicesContainer.FixedTickableServices.Add(trajectoryLineDrawer);

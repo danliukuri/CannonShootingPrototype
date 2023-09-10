@@ -18,9 +18,9 @@ namespace CannonShootingPrototype.Features.Player
             _mouseInputService = mouseInputService;
         }
 
-        public void Initialize() => _mouseInputService.OnMouseAxisXChanged += Rotate;
+        public void Initialize() => _mouseInputService.AxisXChanged += Rotate;
 
-        public void Dispose() => _mouseInputService.OnMouseAxisXChanged -= Rotate;
+        public void Dispose() => _mouseInputService.AxisXChanged -= Rotate;
 
         private void Rotate(float mouseAxisX)
         {

@@ -21,9 +21,9 @@ namespace CannonShootingPrototype.Features.Cannon
             _rotationSpeed = rotationSpeed;
         }
 
-        public void Initialize() => _mouseInputService.OnMouseAxisXChanged += RotateAroundTarget;
+        public void Initialize() => _mouseInputService.AxisXChanged += RotateAroundTarget;
 
-        public void Dispose() => _mouseInputService.OnMouseAxisXChanged -= RotateAroundTarget;
+        public void Dispose() => _mouseInputService.AxisXChanged -= RotateAroundTarget;
 
         private void RotateAroundTarget(float mouseAxisX) =>
             _cannon.RotateAround(_target.position, Vector3.up, mouseAxisX * _rotationSpeed);
