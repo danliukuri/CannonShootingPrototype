@@ -16,19 +16,19 @@ namespace CannonShootingPrototype.Features.Transformation
 
         public ObjectMover(IForceProvider motionForceProvider, Transform transform, float mass)
         {
-            _mass = mass;
-            _transform = transform;
             _motionForceProvider = motionForceProvider;
+            _transform = transform;
+            _mass = mass;
         }
 
         public void Initialize() => _motionForceProvider.ForceChanged += ChangePositionNextFrame;
 
         public void Dispose() => _motionForceProvider.ForceChanged -= ChangePositionNextFrame;
 
-        public void Tick()
+        public void Tick(float deltaTime)
         {
             if (_isNeededToChangePosition)
-                ChangePosition(_motionForce * (_mass * Time.deltaTime));
+                ChangePosition(_motionForce * (_mass * deltaTime));
         }
 
         private void ChangePositionNextFrame(Vector3 motionForce)

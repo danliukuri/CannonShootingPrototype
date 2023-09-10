@@ -18,7 +18,7 @@ namespace CannonShootingPrototype.Features.Environment
             _forceAccumulators = forceAccumulators;
         }
 
-        public void Tick() => GenerateGravityForce(Time.deltaTime);
+        public void Tick(float deltaTime) => GenerateGravityForce(deltaTime);
 
         private void GenerateGravityForce(float deltaTime)
         {

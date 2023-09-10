@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using CannonShootingPrototype.Data.Dynamic.Cannon;
+using CannonShootingPrototype.Data.Static.Configuration.Cannon;
 using CannonShootingPrototype.Features.MeshGeneration;
 using CannonShootingPrototype.Features.Transformation;
 using CannonShootingPrototype.Features.Transformation.Force;
@@ -12,22 +13,22 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
     public class CannonShellConfigurator : IConfigurator<GameObject>
     {
         private readonly IDictionary<GameObject, CannonShellData> _cannonShells;
+        private readonly CannonShellConfig _config;
         private readonly FlowServicesContainer _flowServicesContainer;
         private readonly IList<IForceAccumulator> _forceAccumulators;
         private readonly Transform _initialTransform;
-        private readonly float _mass;
         private readonly IMeshGenerator _meshGenerator;
 
         public CannonShellConfigurator(IDictionary<GameObject, CannonShellData> cannonShells,
-            FlowServicesContainer flowServicesContainer, IList<IForceAccumulator> forceAccumulators,
-            Transform initialTransform, float mass, IMeshGenerator meshGenerator)
+            CannonShellConfig config, FlowServicesContainer flowServicesContainer,
+            IList<IForceAccumulator> forceAccumulators, Transform initialTransform, IMeshGenerator meshGenerator)
         {
             _cannonShells = cannonShells;
+            _config = config;
             _flowServicesContainer = flowServicesContainer;
             _forceAccumulators = forceAccumulators;
             _initialTransform = initialTransform;
             _meshGenerator = meshGenerator;
-            _mass = mass;
         }
 
         public GameObject Configure(GameObject configurableObject)
@@ -36,14 +37,21 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
             _cannonShells.Add(configurableObject, cannonShell);
             ConfigureMesh(configurableObject.GetComponent<MeshFilter>());
             ConfigureMover(cannonShell);
+            var destroyer = ConfigureDestroyer();
+            ConfigureCollisionHandler(cannonShell, destroyer);
             return configurableObject;
         }
+
+        private CannonShellDestroyer ConfigureDestroyer() =>
+            new CannonShellDestroyer(_cannonShells, _forceAccumulators);
 
         private CannonShellData ConfigureData(Transform transform)
         {
             var cannonShell = new CannonShellData
             {
+                Config = _config,
                 Transform = ConfigureTransform(transform),
+                GameObject = transform.gameObject,
                 ForceAccumulator = ConfigureForceAccumulator()
             };
             return cannonShell;
@@ -67,11 +75,21 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
 
         private ObjectMover ConfigureMover(CannonShellData cannonShell)
         {
-            var positionChanger = new ObjectMover(cannonShell.ForceAccumulator, cannonShell.Transform, _mass);
+            var positionChanger = new ObjectMover(cannonShell.ForceAccumulator, cannonShell.Transform, _config.Mass);
             positionChanger.Initialize();
             _flowServicesContainer.DisposableServices.Add(positionChanger);
-            _flowServicesContainer.TickableServices.Add(positionChanger);
+            _flowServicesContainer.FixedTickableServices.Add(positionChanger);
             return positionChanger;
+        }
+
+        private CannonShellCollisionHandler ConfigureCollisionHandler(CannonShellData cannonShell,
+            CannonShellDestroyer cannonShellDestroyer)
+        {
+            var collisionHandler = new CannonShellCollisionHandler(cannonShell, cannonShellDestroyer);
+            collisionHandler.Initialize();
+            _flowServicesContainer.DisposableServices.Add(collisionHandler);
+            _flowServicesContainer.FixedTickableServices.Add(collisionHandler);
+            return collisionHandler;
         }
     }
 }

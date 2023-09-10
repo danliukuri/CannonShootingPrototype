@@ -9,7 +9,7 @@ namespace CannonShootingPrototype.Infrastructure.Services.Input
 
         public event Action FireButtonPressed;
 
-        public void Tick()
+        public void Tick(float deltaTime)
         {
             if (UnityEngine.Input.GetButtonDown(FireButtonName))
                 FireButtonPressed?.Invoke();

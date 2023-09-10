@@ -14,7 +14,7 @@ namespace CannonShootingPrototype.Infrastructure.Services.Input
         public event Action<float> OnMouseAxisXChanged;
         public event Action<float> OnMouseAxisYChanged;
 
-        public void Tick()
+        public void Tick(float deltaTime)
         {
             float newMouseAxisX = UnityEngine.Input.GetAxis(MouseXAxisName);
             float newMouseAxisY = UnityEngine.Input.GetAxis(MouseYAxisName);

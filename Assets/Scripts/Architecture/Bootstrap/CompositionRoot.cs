@@ -108,9 +108,9 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
             _flowServicesContainer.InitializableServices.Add(cannonShellPool);
 
             var meshGenerator = new DeformedCubeMeshGenerator(cannonShellConfig.MaxMeshVertexPositionOffset);
-            var cannonShellConfigurator = new CannonShellConfigurator(_cannonShells, _flowServicesContainer,
-                _forceAccumulators, _sceneDependenciesProvider.CannonBarrelMuzzle,
-                _assetsDependenciesProvider.CannonShellConfig.Mass, meshGenerator);
+            var cannonShellConfigurator = new CannonShellConfigurator(_cannonShells,
+                _assetsDependenciesProvider.CannonShellConfig, _flowServicesContainer, _forceAccumulators,
+                _sceneDependenciesProvider.CannonBarrelMuzzle, meshGenerator);
 
             var cannonShellFactory = new GameObjectFactory(cannonShellConfigurator, cannonShellPool);
 
@@ -124,7 +124,7 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
         {
             var gravityForceGenerator = new GravityForceGenerator(_assetsDependenciesProvider.EnvironmentConfig,
                 _forceAccumulators);
-            _flowServicesContainer.TickableServices.Add(gravityForceGenerator);
+            _flowServicesContainer.FixedTickableServices.Add(gravityForceGenerator);
         }
 
         private void InitializeFlowServices()
@@ -137,6 +137,7 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
 
             ServicesTicker servicesTicker = _sceneDependenciesProvider.ServicesTicker;
             servicesTicker.TickableServices = _flowServicesContainer.TickableServices;
+            servicesTicker.FixedTickableServices = _flowServicesContainer.FixedTickableServices;
         }
     }
 }

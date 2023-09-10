@@ -13,5 +13,8 @@ MonoBehaviour:
   m_Name: CannonShellConfig
   m_EditorClassIdentifier: 
   <PoolConfig>k__BackingField: {fileID: 11400000, guid: b1b467cecc332c641b7a45a027c288c6, type: 2}
+  <MaxNumberOfCollisions>k__BackingField: 1
+  <MaxNumberOfRebounds>k__BackingField: 1
   <MaxMeshVertexPositionOffset>k__BackingField: 0.2
   <Mass>k__BackingField: 10
+  <BounceForce>k__BackingField: 0.7
