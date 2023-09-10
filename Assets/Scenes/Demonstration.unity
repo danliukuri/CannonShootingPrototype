@@ -128,6 +128,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2807941908951690017, guid: 584418eb1d9eb694e9379d2fb2a54ae3, type: 3}
   m_PrefabInstance: {fileID: 2807941909000141834}
   m_PrefabAsset: {fileID: 0}
+--- !u!120 &44077544 stripped
+LineRenderer:
+  m_CorrespondingSourceObject: {fileID: 1801749687437283355, guid: 584418eb1d9eb694e9379d2fb2a54ae3, type: 3}
+  m_PrefabInstance: {fileID: 2807941909000141834}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &57844728 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4887040171967565789, guid: bd0219b142e32f641a8e3e058c4469ad, type: 3}
@@ -492,6 +497,7 @@ MonoBehaviour:
   <CannonShellsParent>k__BackingField: {fileID: 123914035}
   <ServicesTicker>k__BackingField: {fileID: 1264201573}
   <ServicesDisposer>k__BackingField: {fileID: 1264201574}
+  <CannonTrajectoryLineRenderer>k__BackingField: {fileID: 44077544}
 --- !u!4 &1264201572
 Transform:
   m_ObjectHideFlags: 0
@@ -544,6 +550,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <PlayerConfig>k__BackingField: {fileID: 11400000, guid: da2c6b652af750e4baefa6aa55215879, type: 2}
   <CannonConfig>k__BackingField: {fileID: 11400000, guid: 58e79e573fd47834eaa0bbe1907aad01, type: 2}
+  <CannonTrajectoryLineConfig>k__BackingField: {fileID: 11400000, guid: db9591bf910ed634f9a7b5ec99a87de5, type: 2}
   <CannonShellConfig>k__BackingField: {fileID: 11400000, guid: 7004676e7d39a1440b963762b5434e92, type: 2}
   <EnvironmentConfig>k__BackingField: {fileID: 11400000, guid: 633dffa194e7dbf4094d2a53d1b52124, type: 2}
 --- !u!4 &1700353388 stripped
@@ -558,13 +565,37 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 56069150692874030, guid: 584418eb1d9eb694e9379d2fb2a54ae3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -90
+    - target: {fileID: 1801749687437283355, guid: 584418eb1d9eb694e9379d2fb2a54ae3, type: 3}
+      propertyPath: m_Parameters.widthMultiplier
+      value: 0.3
       objectReference: {fileID: 0}
-    - target: {fileID: 2807941908951690017, guid: 584418eb1d9eb694e9379d2fb2a54ae3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 64.8
+    - target: {fileID: 1801749687437283355, guid: 584418eb1d9eb694e9379d2fb2a54ae3, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1801749687437283355, guid: 584418eb1d9eb694e9379d2fb2a54ae3, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].time
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1801749687437283355, guid: 584418eb1d9eb694e9379d2fb2a54ae3, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[1].time
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1801749687437283355, guid: 584418eb1d9eb694e9379d2fb2a54ae3, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1801749687437283355, guid: 584418eb1d9eb694e9379d2fb2a54ae3, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[1].value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1801749687437283355, guid: 584418eb1d9eb694e9379d2fb2a54ae3, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].inWeight
+      value: 0.33333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 1801749687437283355, guid: 584418eb1d9eb694e9379d2fb2a54ae3, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].outWeight
+      value: 0.33333334
       objectReference: {fileID: 0}
     - target: {fileID: 2807941909998334848, guid: 584418eb1d9eb694e9379d2fb2a54ae3, type: 3}
       propertyPath: m_RootOrder

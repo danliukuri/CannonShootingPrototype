@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace CannonShootingPrototype.Features.Environment
 {
-    public class GravityForceGenerator : ITickable
+    public class GravityForceGenerator : IFixedTickable
     {
         private readonly EnvironmentConfig _environmentConfig;
         private readonly IList<IForceAccumulator> _forceAccumulators;
@@ -18,7 +18,7 @@ namespace CannonShootingPrototype.Features.Environment
             _forceAccumulators = forceAccumulators;
         }
 
-        public void Tick(float deltaTime) => GenerateGravityForce(deltaTime);
+        public void FixedTick(float deltaTime) => GenerateGravityForce(deltaTime);
 
         private void GenerateGravityForce(float deltaTime)
         {

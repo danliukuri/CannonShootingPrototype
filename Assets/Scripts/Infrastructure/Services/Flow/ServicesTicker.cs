@@ -6,7 +6,7 @@ namespace CannonShootingPrototype.Infrastructure.Services.Flow
     public class ServicesTicker : MonoBehaviour
     {
         public IList<ITickable> TickableServices { get; set; }
-        public IList<ITickable> FixedTickableServices { get; set; }
+        public IList<IFixedTickable> FixedTickableServices { get; set; }
         
         private void Update()
         {
@@ -17,7 +17,7 @@ namespace CannonShootingPrototype.Infrastructure.Services.Flow
         private void FixedUpdate()
         {
             for (int i = 0; i < FixedTickableServices.Count; i++)
-                FixedTickableServices[i].Tick(Time.fixedDeltaTime);
+                FixedTickableServices[i].FixedTick(Time.deltaTime);
         }
     }
 }

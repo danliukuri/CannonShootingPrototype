@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace CannonShootingPrototype.Features.Transformation
 {
-    public class ObjectMover : IInitializable, IDisposable, ITickable
+    public class ObjectMover : IInitializable, IDisposable, IFixedTickable
     {
         private readonly float _mass;
         private readonly IForceProvider _motionForceProvider;
@@ -25,7 +25,7 @@ namespace CannonShootingPrototype.Features.Transformation
 
         public void Dispose() => _motionForceProvider.ForceChanged -= ChangePositionNextFrame;
 
-        public void Tick(float deltaTime)
+        public void FixedTick(float deltaTime)
         {
             if (_isNeededToChangePosition)
                 ChangePosition(_motionForce * (_mass * deltaTime));

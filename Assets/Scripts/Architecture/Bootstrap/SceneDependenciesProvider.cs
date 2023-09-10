@@ -13,5 +13,6 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
 
         [field: SerializeField] public ServicesTicker ServicesTicker { get; private set; }
         [field: SerializeField] public ServicesDisposer ServicesDisposer { get; private set; }
+        [field: SerializeField] public LineRenderer CannonTrajectoryLineRenderer { get; private set; }
     }
 }

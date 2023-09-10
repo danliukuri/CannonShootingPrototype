@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace CannonShootingPrototype.Features.Cannon.Shell
 {
-    public class CannonShellCollisionHandler : IInitializable, IDisposable, ITickable
+    public class CannonShellCollisionHandler : IInitializable, IDisposable, IFixedTickable
     {
         private readonly CannonShellData _cannonShellData;
         private readonly CannonShellDestroyer _cannonShellDestroyer;
@@ -26,7 +26,7 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
 
         public void Dispose() => _cannonShellData.ForceAccumulator.ForceChanged -= HandleCollisionNextFrame;
 
-        public void Tick(float deltaTime)
+        public void FixedTick(float deltaTime)
         {
             Vector3 currentShellPosition = _cannonShellData.Transform.position;
             if (_isNeededToHandleCollision && IsCollisionEnter(out Collider collider, currentShellPosition, deltaTime)) 

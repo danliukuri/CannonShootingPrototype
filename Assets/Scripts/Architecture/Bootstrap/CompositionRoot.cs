@@ -53,6 +53,7 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
             InitializeCannon();
             InitializeCannonShells();
             InitializeEnvironmentForceGenerators();
+            InitializeTrajectoryLineDrawer();
             InitializeFlowServices();
             return _stateMachine;
         }
@@ -125,6 +126,18 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
             var gravityForceGenerator = new GravityForceGenerator(_assetsDependenciesProvider.EnvironmentConfig,
                 _forceAccumulators);
             _flowServicesContainer.FixedTickableServices.Add(gravityForceGenerator);
+        }
+
+        private void InitializeTrajectoryLineDrawer()
+        {
+            var trajectoryPredictor = new TrajectoryPredictor(_assetsDependenciesProvider.EnvironmentConfig,
+                _assetsDependenciesProvider.CannonTrajectoryLineConfig.MaxNumberOfPoints);
+            
+            var trajectoryLineDrawer = new TrajectoryLineDrawer(_assetsDependenciesProvider.CannonShellConfig,
+                _assetsDependenciesProvider.CannonConfig.Firepower, _sceneDependenciesProvider.CannonBarrelMuzzle,
+                _sceneDependenciesProvider.CannonTrajectoryLineRenderer, trajectoryPredictor);
+            _flowServicesContainer.TickableServices.Add(trajectoryLineDrawer);
+            _flowServicesContainer.FixedTickableServices.Add(trajectoryLineDrawer);
         }
 
         private void InitializeFlowServices()
