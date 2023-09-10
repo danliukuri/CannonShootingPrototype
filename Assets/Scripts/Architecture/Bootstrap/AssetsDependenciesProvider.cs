@@ -12,6 +12,7 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
         [field: SerializeField] public CannonTrajectoryLineConfig CannonTrajectoryLineConfig { get; private set; }
         [field: SerializeField] public CannonShellConfig CannonShellConfig { get; private set; }
         [field: SerializeField] public EnvironmentConfig EnvironmentConfig { get; private set; }
-        [field: SerializeField] public PoolConfig ExplosionPoolConfig { get; private set; }
+        [field: SerializeField] public PoolConfig CannonShellExplosionPoolConfig { get; private set; }
+        [field: SerializeField] public PoolConfig CannonShellCollisionTrailPoolConfig { get; private set; }
     }
 }

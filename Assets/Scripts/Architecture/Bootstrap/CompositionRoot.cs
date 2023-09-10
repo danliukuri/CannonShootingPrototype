@@ -38,6 +38,7 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
         private StateMachine _stateMachine;
         private CannonData _cannonData;
         private GameObjectFactory _cannonShellExplosionFactory;
+        private GameObjectFactory _cannonShellCollisionTrailFactory;
 
         public CompositionRoot(AssetsDependenciesProvider assetsDependenciesProvider,
             SceneDependenciesProvider sceneDependenciesProvider)
@@ -51,12 +52,16 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
             _flowServicesContainer = new FlowServicesContainer();
             InitializeGameStateMachine();
             InitializeInputServices();
+
             InitializePlayer();
             InitializeCannon();
-            InitializeCannonShellExplosion();
-            InitializeCannonShells();
-            InitializeEnvironmentForceGenerators();
             InitializeTrajectoryLineDrawer();
+
+            InitializeCannonShellExplosion();
+            InitializeCannonShellCollisionTrail();
+            InitializeCannonShells();
+
+            InitializeEnvironmentForceGenerators();
             InitializeFlowServices();
             return _stateMachine;
         }
@@ -107,15 +112,39 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
             };
         }
 
+        private void InitializeTrajectoryLineDrawer()
+        {
+            var trajectoryPredictor = new TrajectoryPredictor(_assetsDependenciesProvider.EnvironmentConfig,
+                _assetsDependenciesProvider.CannonTrajectoryLineConfig.MaxNumberOfPoints);
+            
+            var trajectoryLineDrawer =
+                new TrajectoryLineDrawer(_cannonData, _assetsDependenciesProvider.CannonShellConfig,
+                    _sceneDependenciesProvider.CannonTrajectoryLineRenderer, trajectoryPredictor);
+            _flowServicesContainer.TickableServices.Add(trajectoryLineDrawer);
+            _flowServicesContainer.FixedTickableServices.Add(trajectoryLineDrawer);
+        }
+
         private void InitializeCannonShellExplosion()
         {
-            PoolConfig cannonShellExplosionPoolConfig = _assetsDependenciesProvider.ExplosionPoolConfig;
+            PoolConfig cannonShellExplosionPoolConfig = _assetsDependenciesProvider.CannonShellExplosionPoolConfig;
             var cannonShellExplosionPool = new ObjectPool(cannonShellExplosionPoolConfig.Prefab,
                 _sceneDependenciesProvider.CannonShellExplosionsParent,
                 cannonShellExplosionPoolConfig.InitialNumberOfObjects, Object.Instantiate);
             _flowServicesContainer.InitializableServices.Add(cannonShellExplosionPool);
             
             _cannonShellExplosionFactory = new GameObjectFactory(cannonShellExplosionPool);
+        }
+
+        private void InitializeCannonShellCollisionTrail()
+        {
+            PoolConfig cannonShellCollisionTrailPoolConfig =
+                _assetsDependenciesProvider.CannonShellCollisionTrailPoolConfig;
+            var cannonShellExplosionPool = new ObjectPool(cannonShellCollisionTrailPoolConfig.Prefab,
+                _sceneDependenciesProvider.CannonShellCollisionTrailsParent,
+                cannonShellCollisionTrailPoolConfig.InitialNumberOfObjects, Object.Instantiate);
+            _flowServicesContainer.InitializableServices.Add(cannonShellExplosionPool);
+            
+            _cannonShellCollisionTrailFactory = new GameObjectFactory(cannonShellExplosionPool);
         }
 
         private void InitializeCannonShells()
@@ -131,7 +160,7 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
             var meshGenerator = new DeformedCubeMeshGenerator(cannonShellConfig.MaxMeshVertexPositionOffset);
             var cannonShellConfigurator = new CannonShellConfigurator(_cannonShellExplosionFactory, _cannonShells,
                 _assetsDependenciesProvider.CannonShellConfig, _flowServicesContainer, _forceAccumulators,
-                _sceneDependenciesProvider.CannonBarrelMuzzle, meshGenerator);
+                _sceneDependenciesProvider.CannonBarrelMuzzle, meshGenerator, _cannonShellCollisionTrailFactory);
 
             var cannonShellFactory = new GameObjectFactory(cannonShellPool, cannonShellConfigurator);
 
@@ -151,18 +180,6 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
             var gravityForceGenerator = new GravityForceGenerator(_assetsDependenciesProvider.EnvironmentConfig,
                 _forceAccumulators);
             _flowServicesContainer.FixedTickableServices.Add(gravityForceGenerator);
-        }
-
-        private void InitializeTrajectoryLineDrawer()
-        {
-            var trajectoryPredictor = new TrajectoryPredictor(_assetsDependenciesProvider.EnvironmentConfig,
-                _assetsDependenciesProvider.CannonTrajectoryLineConfig.MaxNumberOfPoints);
-            
-            var trajectoryLineDrawer =
-                new TrajectoryLineDrawer(_cannonData, _assetsDependenciesProvider.CannonShellConfig,
-                _sceneDependenciesProvider.CannonTrajectoryLineRenderer, trajectoryPredictor);
-            _flowServicesContainer.TickableServices.Add(trajectoryLineDrawer);
-            _flowServicesContainer.FixedTickableServices.Add(trajectoryLineDrawer);
         }
 
         private void InitializeFlowServices()

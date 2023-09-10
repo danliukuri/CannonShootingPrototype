@@ -19,11 +19,13 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
         private readonly IList<IForceAccumulator> _forceAccumulators;
         private readonly Transform _initialTransform;
         private readonly IMeshGenerator _meshGenerator;
+        private readonly IFactory<GameObject> _cannonShellCollisionTrailFactory;
 
         public CannonShellConfigurator(IFactory<GameObject> cannonShellExplosionFactory,
             IDictionary<GameObject, CannonShellData> cannonShells, CannonShellConfig config,
             FlowServicesContainer flowServicesContainer, IList<IForceAccumulator> forceAccumulators,
-            Transform initialTransform, IMeshGenerator meshGenerator)
+            Transform initialTransform, IMeshGenerator meshGenerator,
+            IFactory<GameObject> cannonShellCollisionTrailFactory)
         {
             _cannonShellExplosionFactory = cannonShellExplosionFactory;
             _cannonShells = cannonShells;
@@ -32,6 +34,7 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
             _forceAccumulators = forceAccumulators;
             _initialTransform = initialTransform;
             _meshGenerator = meshGenerator;
+            _cannonShellCollisionTrailFactory = cannonShellCollisionTrailFactory;
         }
 
         public GameObject Configure(GameObject configurableObject)
@@ -41,9 +44,13 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
             ConfigureMesh(configurableObject.GetComponent<MeshFilter>());
             ConfigureMover(cannonShell);
             CannonShellDestroyer destroyer = ConfigureDestroyer();
-            ConfigureCollisionHandler(cannonShell, destroyer);
+            IBouncingHandler bouncingHandler = ConfigureBouncingHandler(cannonShell);
+            ConfigureCollisionHandler(cannonShell, destroyer, bouncingHandler);
             return configurableObject;
         }
+
+        private IBouncingHandler ConfigureBouncingHandler(CannonShellData cannonShell) =>
+            new CannonShellBouncingHandler(cannonShell);
 
         private CannonShellData ConfigureData(Transform transform)
         {
@@ -64,7 +71,7 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
             return transform;
         }
 
-        private ForceAccumulator ConfigureForceAccumulator()
+        private IForceAccumulator ConfigureForceAccumulator()
         {
             var forceAccumulator = new ForceAccumulator();
             _forceAccumulators.Add(forceAccumulator);
@@ -86,9 +93,10 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
             new CannonShellDestroyer(_cannonShellExplosionFactory, _cannonShells, _forceAccumulators);
 
         private CannonShellCollisionHandler ConfigureCollisionHandler(CannonShellData cannonShell,
-            CannonShellDestroyer cannonShellDestroyer)
+            CannonShellDestroyer cannonShellDestroyer, IBouncingHandler bouncingHandler)
         {
-            var collisionHandler = new CannonShellCollisionHandler(cannonShell, cannonShellDestroyer);
+            var collisionHandler = new CannonShellCollisionHandler(bouncingHandler, cannonShell, cannonShellDestroyer,
+                _cannonShellCollisionTrailFactory);
             collisionHandler.Initialize();
             _flowServicesContainer.DisposableServices.Add(collisionHandler);
             _flowServicesContainer.FixedTickableServices.Add(collisionHandler);

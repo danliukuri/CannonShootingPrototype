@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CannonShootingPrototype.Data.Dynamic.Cannon;
+using CannonShootingPrototype.Infrastructure.Factories;
 using CannonShootingPrototype.Infrastructure.Services.Flow;
 using UnityEngine;
 
@@ -8,18 +9,23 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
 {
     public class CannonShellCollisionHandler : IInitializable, IDisposable, IFixedTickable
     {
+        private readonly IBouncingHandler _bouncingHandler;
         private readonly CannonShellData _cannonShellData;
         private readonly CannonShellDestroyer _cannonShellDestroyer;
+        private readonly IFactory<GameObject> _cannonShellCollisionTrailFactory;
 
         private Vector3 _currentShellForce;
         private bool _isNeededToHandleCollision;
         private int _numberOfRebounds;
 
-        public CannonShellCollisionHandler(CannonShellData cannonShellData, CannonShellDestroyer cannonShellDestroyer)
+        public CannonShellCollisionHandler(IBouncingHandler bouncingHandler, CannonShellData cannonShellData,
+            CannonShellDestroyer cannonShellDestroyer, IFactory<GameObject> cannonShellCollisionTrailFactory)
         {
+            _bouncingHandler = bouncingHandler;
             _cannonShellDestroyer = cannonShellDestroyer;
             _cannonShellData = cannonShellData;
             _numberOfRebounds = cannonShellData.Config.MaxNumberOfRebounds;
+            _cannonShellCollisionTrailFactory = cannonShellCollisionTrailFactory;
         }
 
         public void Initialize() => _cannonShellData.ForceAccumulator.ForceChanged += HandleCollisionNextFrame;
@@ -41,25 +47,27 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
 
         public void HandleCollision(Collider collider, Vector3 position)
         {
+            Vector3 collisionPoint = collider.ClosestPoint(position);
+            Vector3 collisionNormal = position - collisionPoint;
             if (_numberOfRebounds > 0)
             {
-                GenerateBounceForce(collider, position);
+                _bouncingHandler.HandleBounce(collisionNormal, _currentShellForce);
                 _numberOfRebounds--;
             }
             else
-                _cannonShellDestroyer.Destroy(_cannonShellData, collider.ClosestPoint(position));
+                _cannonShellDestroyer.Destroy(_cannonShellData, collisionPoint);
+            
+            SpawnCollisionTrail(collisionPoint, collisionNormal);
 
             _isNeededToHandleCollision = false;
         }
 
-        private void GenerateBounceForce(Collider collider, Vector3 position)
+        private void SpawnCollisionTrail(Vector3 collisionPoint, Vector3 collisionNormal)
         {
-            Vector3 collisionDirection = position - collider.ClosestPoint(position);
-            Vector3 collisionNormal = collisionDirection.normalized;
-            Vector3 reflectedForce = Vector3.Reflect(_currentShellForce, collisionNormal);
-            Vector3 bounceForce = reflectedForce.normalized *
-                                  (_currentShellForce.magnitude * _cannonShellData.Config.BounceForce);
-            _cannonShellData.ForceAccumulator.Accumulate(-_currentShellForce + bounceForce);
+            GameObject collisionTrail = _cannonShellCollisionTrailFactory.Get();
+            collisionTrail.transform.position = collisionPoint;
+            collisionTrail.transform.rotation =
+                Quaternion.LookRotation(collisionNormal) * Quaternion.AngleAxis(90f, Vector3.right);
         }
 
         public bool IsCollisionEnter(out Collider collider, Vector3 position, float deltaTime)
