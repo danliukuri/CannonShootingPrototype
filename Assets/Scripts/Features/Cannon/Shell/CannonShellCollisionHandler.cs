@@ -47,7 +47,7 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
                 _numberOfRebounds--;
             }
             else
-                _cannonShellDestroyer.Destroy(_cannonShellData);
+                _cannonShellDestroyer.Destroy(_cannonShellData, collider.ClosestPoint(position));
 
             _isNeededToHandleCollision = false;
         }

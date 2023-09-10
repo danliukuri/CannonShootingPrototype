@@ -1,5 +1,6 @@
 ﻿using CannonShootingPrototype.Data.Static.Configuration;
 using CannonShootingPrototype.Data.Static.Configuration.Cannon;
+using CannonShootingPrototype.Data.Static.Configuration.Creation;
 using UnityEngine;
 
 namespace CannonShootingPrototype.Architecture.Bootstrap
@@ -11,5 +12,6 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
         [field: SerializeField] public CannonTrajectoryLineConfig CannonTrajectoryLineConfig { get; private set; }
         [field: SerializeField] public CannonShellConfig CannonShellConfig { get; private set; }
         [field: SerializeField] public EnvironmentConfig EnvironmentConfig { get; private set; }
+        [field: SerializeField] public PoolConfig ExplosionPoolConfig { get; private set; }
     }
 }

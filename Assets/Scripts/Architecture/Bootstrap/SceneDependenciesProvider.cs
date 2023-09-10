@@ -10,6 +10,7 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
         [field: SerializeField] public Transform CannonBarrel { get; private set; }
         [field: SerializeField] public Transform CannonBarrelMuzzle { get; private set; }
         [field: SerializeField] public Transform CannonShellsParent { get; private set; }
+        [field: SerializeField] public Transform CannonShellExplosionsParent { get; private set; }
 
         [field: SerializeField] public ServicesTicker ServicesTicker { get; private set; }
         [field: SerializeField] public ServicesDisposer ServicesDisposer { get; private set; }

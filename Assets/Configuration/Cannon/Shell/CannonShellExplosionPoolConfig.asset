@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1af0804d6686b644db5729abc85257a6, type: 3}
-  m_Name: CannonShellPoolConfig
+  m_Name: CannonShellExplosionPoolConfig
   m_EditorClassIdentifier: 
-  <Prefab>k__BackingField: {fileID: 1336605836274217069, guid: 546452fde9e66ae439a1ce8649b0eec3, type: 3}
-  <InitialNumberOfObjects>k__BackingField: 3
+  <Prefab>k__BackingField: {fileID: 282100877655631795, guid: c9a6aee9000fb264493003c552e13a47, type: 3}
+  <InitialNumberOfObjects>k__BackingField: 10

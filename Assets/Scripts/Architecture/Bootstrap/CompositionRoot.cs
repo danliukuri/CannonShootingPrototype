@@ -37,6 +37,7 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
         private MouseInputService _mouseInputService;
         private StateMachine _stateMachine;
         private CannonData _cannonData;
+        private GameObjectFactory _cannonShellExplosionFactory;
 
         public CompositionRoot(AssetsDependenciesProvider assetsDependenciesProvider,
             SceneDependenciesProvider sceneDependenciesProvider)
@@ -52,6 +53,7 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
             InitializeInputServices();
             InitializePlayer();
             InitializeCannon();
+            InitializeCannonShellExplosion();
             InitializeCannonShells();
             InitializeEnvironmentForceGenerators();
             InitializeTrajectoryLineDrawer();
@@ -105,6 +107,17 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
             };
         }
 
+        private void InitializeCannonShellExplosion()
+        {
+            PoolConfig cannonShellExplosionPoolConfig = _assetsDependenciesProvider.ExplosionPoolConfig;
+            var cannonShellExplosionPool = new ObjectPool(cannonShellExplosionPoolConfig.Prefab,
+                _sceneDependenciesProvider.CannonShellExplosionsParent,
+                cannonShellExplosionPoolConfig.InitialNumberOfObjects, Object.Instantiate);
+            _flowServicesContainer.InitializableServices.Add(cannonShellExplosionPool);
+            
+            _cannonShellExplosionFactory = new GameObjectFactory(cannonShellExplosionPool);
+        }
+
         private void InitializeCannonShells()
         {
             CannonShellConfig cannonShellConfig = _assetsDependenciesProvider.CannonShellConfig;
@@ -116,11 +129,11 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
             _flowServicesContainer.InitializableServices.Add(cannonShellPool);
 
             var meshGenerator = new DeformedCubeMeshGenerator(cannonShellConfig.MaxMeshVertexPositionOffset);
-            var cannonShellConfigurator = new CannonShellConfigurator(_cannonShells,
+            var cannonShellConfigurator = new CannonShellConfigurator(_cannonShellExplosionFactory, _cannonShells,
                 _assetsDependenciesProvider.CannonShellConfig, _flowServicesContainer, _forceAccumulators,
                 _sceneDependenciesProvider.CannonBarrelMuzzle, meshGenerator);
 
-            var cannonShellFactory = new GameObjectFactory(cannonShellConfigurator, cannonShellPool);
+            var cannonShellFactory = new GameObjectFactory(cannonShellPool, cannonShellConfigurator);
 
             var cannonShellShooter =
                 new CannonShellShooter(_cannonData, cannonShellFactory, _cannonShells, _fireButtonInputService);

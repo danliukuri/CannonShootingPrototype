@@ -185,18 +185,6 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4887040171967565789, guid: bd0219b142e32f641a8e3e058c4469ad, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4887040171967565789, guid: bd0219b142e32f641a8e3e058c4469ad, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4887040171967565789, guid: bd0219b142e32f641a8e3e058c4469ad, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bd0219b142e32f641a8e3e058c4469ad, type: 3}
 --- !u!4 &73848742 stripped
@@ -261,7 +249,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3172930473597052920, guid: 02fcb5c6c31775e4fbc7f52cb18b33f6, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3172930473597052920, guid: 02fcb5c6c31775e4fbc7f52cb18b33f6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -341,6 +329,36 @@ Transform:
   - {fileID: 73848742}
   m_Father: {fileID: 0}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &676960177
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 676960178}
+  m_Layer: 0
+  m_Name: CannonShellExplosionsParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &676960178
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 676960177}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
@@ -495,6 +513,7 @@ MonoBehaviour:
   <CannonBarrel>k__BackingField: {fileID: 39266032}
   <CannonBarrelMuzzle>k__BackingField: {fileID: 2807941909000141835}
   <CannonShellsParent>k__BackingField: {fileID: 123914035}
+  <CannonShellExplosionsParent>k__BackingField: {fileID: 676960178}
   <ServicesTicker>k__BackingField: {fileID: 1264201573}
   <ServicesDisposer>k__BackingField: {fileID: 1264201574}
   <CannonTrajectoryLineRenderer>k__BackingField: {fileID: 44077544}
@@ -553,6 +572,7 @@ MonoBehaviour:
   <CannonTrajectoryLineConfig>k__BackingField: {fileID: 11400000, guid: db9591bf910ed634f9a7b5ec99a87de5, type: 2}
   <CannonShellConfig>k__BackingField: {fileID: 11400000, guid: 7004676e7d39a1440b963762b5434e92, type: 2}
   <EnvironmentConfig>k__BackingField: {fileID: 11400000, guid: 633dffa194e7dbf4094d2a53d1b52124, type: 2}
+  <ExplosionPoolConfig>k__BackingField: {fileID: 11400000, guid: 596201b53ba832d43adef7ebe5f7d04a, type: 2}
 --- !u!4 &1700353388 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3172930473597052920, guid: 02fcb5c6c31775e4fbc7f52cb18b33f6, type: 3}
@@ -763,23 +783,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4887040171967565789, guid: bd0219b142e32f641a8e3e058c4469ad, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4887040171967565789, guid: bd0219b142e32f641a8e3e058c4469ad, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4887040171967565789, guid: bd0219b142e32f641a8e3e058c4469ad, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 4887040171967565789, guid: bd0219b142e32f641a8e3e058c4469ad, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4887040171967565789, guid: bd0219b142e32f641a8e3e058c4469ad, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bd0219b142e32f641a8e3e058c4469ad, type: 3}

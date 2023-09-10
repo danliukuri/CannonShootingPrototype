@@ -12,6 +12,7 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
 {
     public class CannonShellConfigurator : IConfigurator<GameObject>
     {
+        private readonly IFactory<GameObject> _cannonShellExplosionFactory;
         private readonly IDictionary<GameObject, CannonShellData> _cannonShells;
         private readonly CannonShellConfig _config;
         private readonly FlowServicesContainer _flowServicesContainer;
@@ -19,10 +20,12 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
         private readonly Transform _initialTransform;
         private readonly IMeshGenerator _meshGenerator;
 
-        public CannonShellConfigurator(IDictionary<GameObject, CannonShellData> cannonShells,
-            CannonShellConfig config, FlowServicesContainer flowServicesContainer,
-            IList<IForceAccumulator> forceAccumulators, Transform initialTransform, IMeshGenerator meshGenerator)
+        public CannonShellConfigurator(IFactory<GameObject> cannonShellExplosionFactory,
+            IDictionary<GameObject, CannonShellData> cannonShells, CannonShellConfig config,
+            FlowServicesContainer flowServicesContainer, IList<IForceAccumulator> forceAccumulators,
+            Transform initialTransform, IMeshGenerator meshGenerator)
         {
+            _cannonShellExplosionFactory = cannonShellExplosionFactory;
             _cannonShells = cannonShells;
             _config = config;
             _flowServicesContainer = flowServicesContainer;
@@ -37,13 +40,10 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
             _cannonShells.Add(configurableObject, cannonShell);
             ConfigureMesh(configurableObject.GetComponent<MeshFilter>());
             ConfigureMover(cannonShell);
-            var destroyer = ConfigureDestroyer();
+            CannonShellDestroyer destroyer = ConfigureDestroyer();
             ConfigureCollisionHandler(cannonShell, destroyer);
             return configurableObject;
         }
-
-        private CannonShellDestroyer ConfigureDestroyer() =>
-            new CannonShellDestroyer(_cannonShells, _forceAccumulators);
 
         private CannonShellData ConfigureData(Transform transform)
         {
@@ -81,6 +81,9 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
             _flowServicesContainer.FixedTickableServices.Add(positionChanger);
             return positionChanger;
         }
+
+        private CannonShellDestroyer ConfigureDestroyer() =>
+            new CannonShellDestroyer(_cannonShellExplosionFactory, _cannonShells, _forceAccumulators);
 
         private CannonShellCollisionHandler ConfigureCollisionHandler(CannonShellData cannonShell,
             CannonShellDestroyer cannonShellDestroyer)
