@@ -16,3 +16,5 @@ MonoBehaviour:
   <MaxFirepower>k__BackingField: 10
   <InitialFirepower>k__BackingField: 5
   <FirepowerChangingSpeed>k__BackingField: 3
+  <ShootAnimationSpeed>k__BackingField: 5
+  <ShootAnimationDistance>k__BackingField: 0.4

@@ -8,7 +8,10 @@ namespace CannonShootingPrototype.Data.Static.Configuration.Cannon
         [field: SerializeField, Min(default)] public float MinFirepower { get; private set; }
         [field: SerializeField, Min(default)] public float MaxFirepower { get; private set; }
         [field: SerializeField, Min(default)] public float InitialFirepower { get; private set; }
+
         [field: SerializeField, Min(default)] public float FirepowerChangingSpeed { get; private set; }
-        
+
+        [field: SerializeField, Min(default)] public float ShootAnimationSpeed { get; private set; }
+        [field: SerializeField, Min(default)] public float ShootAnimationDistance { get; private set; }
     }
 }
