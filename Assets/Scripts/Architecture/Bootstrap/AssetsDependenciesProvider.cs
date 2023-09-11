@@ -8,6 +8,7 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
     public class AssetsDependenciesProvider : MonoBehaviour
     {
         [field: SerializeField] public PlayerConfig PlayerConfig { get; private set; }
+        [field: SerializeField] public CameraConfig CameraConfig { get; private set; }
         [field: SerializeField] public CannonConfig CannonConfig { get; private set; }
         [field: SerializeField] public CannonTrajectoryLineConfig CannonTrajectoryLineConfig { get; private set; }
         [field: SerializeField] public CannonShellConfig CannonShellConfig { get; private set; }

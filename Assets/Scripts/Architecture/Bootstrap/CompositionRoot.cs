@@ -40,6 +40,7 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
         private GameObjectFactory _cannonShellExplosionFactory;
         private GameObjectFactory _cannonShellCollisionTrailFactory;
         private ServicesInitializer _servicesInitializer;
+        private CameraShaker _cameraShaker;
 
         public CompositionRoot(AssetsDependenciesProvider assetsDependenciesProvider,
             SceneDependenciesProvider sceneDependenciesProvider)
@@ -97,6 +98,10 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
                 _assetsDependenciesProvider.PlayerConfig.RotationSpeed);
             _flowServicesContainer.InitializableServices.Add(playerRotator);
             _flowServicesContainer.DisposableServices.Add(playerRotator);
+            
+            _cameraShaker = new CameraShaker(_assetsDependenciesProvider.CameraConfig,
+                _sceneDependenciesProvider.PlayerCamera);
+            _flowServicesContainer.TickableServices.Add(_cameraShaker);
         }
 
         private void InitializeCannon()
@@ -173,7 +178,8 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
             var meshGenerator = new DeformedCubeMeshGenerator(cannonShellConfig.MaxMeshVertexPositionOffset);
             var cannonShellConfigurator = new CannonShellConfigurator(_cannonShellExplosionFactory, _cannonShells,
                 _assetsDependenciesProvider.CannonShellConfig, _flowServicesContainer, _forceAccumulators,
-                _sceneDependenciesProvider.CannonBarrelMuzzle, meshGenerator, _cannonShellCollisionTrailFactory);
+                _sceneDependenciesProvider.CannonBarrelMuzzle, meshGenerator, _cannonShellCollisionTrailFactory,
+                _cameraShaker);
 
             var cannonShellFactory = new GameObjectFactory(cannonShellPool, cannonShellConfigurator);
 

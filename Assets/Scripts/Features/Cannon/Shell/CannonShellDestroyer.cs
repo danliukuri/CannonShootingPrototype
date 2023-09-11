@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using CannonShootingPrototype.Data.Dynamic.Cannon;
+using CannonShootingPrototype.Features.Player;
 using CannonShootingPrototype.Features.Transformation.Force;
 using CannonShootingPrototype.Infrastructure.Factories;
 using UnityEngine;
@@ -8,13 +9,15 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
 {
     public class CannonShellDestroyer
     {
+        private readonly ICameraShaker _cameraShaker;
         private readonly IFactory<GameObject> _cannonShellExplosionFactory;
         private readonly IDictionary<GameObject, CannonShellData> _cannonShells;
         private readonly IList<IForceAccumulator> _forceAccumulators;
 
-        public CannonShellDestroyer(IFactory<GameObject> cannonShellExplosionFactory,
+        public CannonShellDestroyer(ICameraShaker cameraShaker, IFactory<GameObject> cannonShellExplosionFactory,
             IDictionary<GameObject, CannonShellData> cannonShells, IList<IForceAccumulator> forceAccumulators)
         {
+            _cameraShaker = cameraShaker;
             _cannonShells = cannonShells;
             _forceAccumulators = forceAccumulators;
             _cannonShellExplosionFactory = cannonShellExplosionFactory;
@@ -30,6 +33,7 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
             _forceAccumulators.Remove(cannonShell.ForceAccumulator);
             _cannonShells.Remove(cannonShell.GameObject);
             cannonShell.GameObject.SetActive(false);
+            _cameraShaker.StartShake();
         }
     }
 }

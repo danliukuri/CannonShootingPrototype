@@ -2,6 +2,7 @@
 using CannonShootingPrototype.Data.Dynamic.Cannon;
 using CannonShootingPrototype.Data.Static.Configuration.Cannon;
 using CannonShootingPrototype.Features.MeshGeneration;
+using CannonShootingPrototype.Features.Player;
 using CannonShootingPrototype.Features.Transformation;
 using CannonShootingPrototype.Features.Transformation.Force;
 using CannonShootingPrototype.Infrastructure.Factories;
@@ -12,6 +13,7 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
 {
     public class CannonShellConfigurator : IConfigurator<GameObject>
     {
+        private readonly IFactory<GameObject> _cannonShellCollisionTrailFactory;
         private readonly IFactory<GameObject> _cannonShellExplosionFactory;
         private readonly IDictionary<GameObject, CannonShellData> _cannonShells;
         private readonly CannonShellConfig _config;
@@ -19,13 +21,13 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
         private readonly IList<IForceAccumulator> _forceAccumulators;
         private readonly Transform _initialTransform;
         private readonly IMeshGenerator _meshGenerator;
-        private readonly IFactory<GameObject> _cannonShellCollisionTrailFactory;
+        private readonly ICameraShaker _cameraShaker;
 
         public CannonShellConfigurator(IFactory<GameObject> cannonShellExplosionFactory,
             IDictionary<GameObject, CannonShellData> cannonShells, CannonShellConfig config,
             FlowServicesContainer flowServicesContainer, IList<IForceAccumulator> forceAccumulators,
             Transform initialTransform, IMeshGenerator meshGenerator,
-            IFactory<GameObject> cannonShellCollisionTrailFactory)
+            IFactory<GameObject> cannonShellCollisionTrailFactory, ICameraShaker cameraShaker)
         {
             _cannonShellExplosionFactory = cannonShellExplosionFactory;
             _cannonShells = cannonShells;
@@ -35,6 +37,7 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
             _initialTransform = initialTransform;
             _meshGenerator = meshGenerator;
             _cannonShellCollisionTrailFactory = cannonShellCollisionTrailFactory;
+            _cameraShaker = cameraShaker;
         }
 
         public GameObject Configure(GameObject configurableObject)
@@ -90,7 +93,7 @@ namespace CannonShootingPrototype.Features.Cannon.Shell
         }
 
         private CannonShellDestroyer ConfigureDestroyer() =>
-            new CannonShellDestroyer(_cannonShellExplosionFactory, _cannonShells, _forceAccumulators);
+            new CannonShellDestroyer(_cameraShaker, _cannonShellExplosionFactory, _cannonShells, _forceAccumulators);
 
         private CannonShellCollisionHandler ConfigureCollisionHandler(CannonShellData cannonShell,
             CannonShellDestroyer cannonShellDestroyer, IBouncingHandler bouncingHandler)

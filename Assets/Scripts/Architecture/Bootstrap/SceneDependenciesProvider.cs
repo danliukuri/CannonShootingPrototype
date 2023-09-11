@@ -6,6 +6,7 @@ namespace CannonShootingPrototype.Architecture.Bootstrap
     public class SceneDependenciesProvider : MonoBehaviour
     {
         [field: SerializeField] public Transform Player { get; private set; }
+        [field: SerializeField] public Transform PlayerCamera { get; private set; }
         [field: SerializeField] public Transform Cannon { get; private set; }
         [field: SerializeField] public Transform CannonBarrel { get; private set; }
         [field: SerializeField] public Transform CannonBarrelMuzzle { get; private set; }
